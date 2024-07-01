@@ -160,6 +160,8 @@ def create_app(test_config=None):
         questions = db.session.query(Question).filter(Question.category == category_id).all()
         questions_json = [question.format() for question in questions]
         category = db.session.query(Category).get(category_id)
+        if category is None:
+            abort(422)
         return jsonify({
             'success': True,
             'questions': questions_json,
@@ -186,7 +188,7 @@ def create_app(test_config=None):
         if "category_id" not in data: 
             questions = db.session.query(Question).filter(Question.id.not_in(previous_questions)).all()
         else:
-            questions = questions = (db.session.query(Question).filter(cast(Question.category, Integer) == category_id)
+            questions = questions = (db.session.query(Question).filter(Question.category == category_id)
                             .filter(Question.id.not_in(previous_questions)).all())
 
         if len(questions) != 0:
@@ -206,29 +208,32 @@ def create_app(test_config=None):
     def bad_request(error):
         return jsonify({
             "success": False,
-            'messages': 'Bad request'
+            'messages': 'Bad request',
+            "error": 400,
         }), 400
     
     @app.errorhandler(422)
     def unprocessable_request(error):
         return jsonify({
             "success": False,
-            'messages': "Unprocessable Entity"
+            'messages': "Unprocessable entity",
+            "error": 422,
         }), 422
-    
-    @app.errorhandler(500)
-    def internal_server_error(error):
-        return jsonify({
-            "success": False,
-            'messages': "Internal server error"
-        }), 500
     
     @app.errorhandler(404)
     def not_found_request(error):
         return jsonify({
             "success": False,
-            "message": "Page not found"
+            "message": "Page not found",
+            "error": 404,
         }), 404
     
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return jsonify({
+            "success": False,
+            'messages': "Internal server error",
+            "error": 500,
+        }), 500
     return app
 
