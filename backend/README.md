@@ -73,7 +73,7 @@ You will need to provide detailed documentation of your API endpoints including 
 
 ### Documentation Example
 
-`GET '/api/v1.0/categories'`
+`GET '/categories'`
 
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
@@ -81,12 +81,194 @@ You will need to provide detailed documentation of your API endpoints including 
 
 ```json
 {
-  "1": "Science",
-  "2": "Art",
-  "3": "Geography",
-  "4": "History",
-  "5": "Entertainment",
-  "6": "Sports"
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true
+}
+```
+
+`GET '/questions'`
+
+- GET requests for questions, including pagination (every 10  ). This endpoint should return a list of questions, number of total questions, current category, categories.
+- Request Arguments: `page: integer`
+- Returns: list of questions, number of total questions, current category, categories
+
+```json
+{
+    "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+    "current_category": "",
+    "questions": [
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "Muhammad Ali",
+            "category": 4,
+            "difficulty": 1,
+            "id": 9,
+            "question": "What boxer's original name is Cassius Clay?"
+        }
+    ],
+    "success": true,
+    "total_questions": 22
+}
+```
+
+`DELETE '/questions/<int:question_id>'`
+
+- Delete question using a question ID
+- Request Arguments: `question_id: integer`
+- Returns: message
+
+```json
+{
+  "success": true
+}
+```
+
+`POST '/questions'`
+
+- POST a new question, which will require the question and answer text, category, and difficulty score.
+- Request body:
+
+```json
+{
+  "question": "Question",
+  "answer": "Answer",
+  "difficulty": 1,
+  "category": 1
+}
+```
+
+- Returns: message
+
+```json
+{
+    "success": true
+}
+```
+
+`POST '/questions/search'`
+
+- POST request to search question by name
+- Request body:
+
+```json
+{
+  "query": "who"
+}
+```
+
+- Returns: list of questions, number of total questions, current category, categories
+
+```json
+{
+    "current_category": "",
+    "questions": [
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        }
+    ],
+    "success": true,
+    "total_questions": 3
+}
+```
+
+`GET '/categories/<int:category_id>/questions'`
+
+- GET request to search question base on category
+- Returns: list of questions, number of total questions, current category, categories
+
+```json
+{
+    "current_category": "Science",
+    "questions": [
+        {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },
+        {
+            "answer": "George Washington Carver",
+            "category": 4,
+            "difficulty": 2,
+            "id": 12,
+            "question": "Who invented Peanut Butter?"
+        },
+        {
+            "answer": "Alexander Fleming",
+            "category": 4,
+            "difficulty": 3,
+            "id": 21,
+            "question": "Who discovered penicillin?"
+        }
+    ],
+    "success": true,
+    "total_questions": 3
+}
+```
+
+`POST '/quizzes'`
+
+- POST endpoint to get questions to play the quiz
+- Request body:
+
+```json
+{
+  "previous_questions": [],
+  "category_id": 3
+}
+```
+
+- Returns: question
+
+```json
+{
+    "question": {
+        "answer": "The Palace of Versailles",
+        "category": 3,
+        "difficulty": 3,
+        "id": 14,
+        "question": "In which royal palace would you find the Hall of Mirrors?"
+    },
+    "success": true
 }
 ```
 
@@ -102,3 +284,7 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+
+### Test result
+
+![Test result](../image.png)

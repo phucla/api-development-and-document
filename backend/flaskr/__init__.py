@@ -41,7 +41,7 @@ def create_app(test_config=None):
     @app.route('/categories')
     def categories():
         categories = db.session.query(Category).all()
-        categories_json = [category.format() for category in categories]
+        categories_json = {category.id: category.type for category in categories}
         return jsonify({
             'success': True,
             'categories': categories_json
@@ -67,7 +67,7 @@ def create_app(test_config=None):
         questions = db.session.query(Question).all()
         questions_json = [question.format() for question in questions]
         categories = db.session.query(Category).all()
-        categories_json = [category.format() for category in categories]
+        categories_json = {category.id: category.type for category in categories}
         return jsonify({
             'success': True,
             'questions': questions_json[start:end],
@@ -184,7 +184,7 @@ def create_app(test_config=None):
         data = request.get_json()
         previous_questions = data["previous_questions"]
         category_id = data["category_id"]
-
+        result = {"success": True}
         if "category_id" not in data: 
             questions = db.session.query(Question).filter(Question.id.not_in(previous_questions)).all()
         else:
@@ -194,11 +194,8 @@ def create_app(test_config=None):
         if len(questions) != 0:
             questions_json = [question.format() for question in questions]
             question = random.choice(questions_json)
-
-        return jsonify({
-            'success': True,
-            'question': question
-        })
+            result["question"] = question
+        return jsonify(result)
     """
     @TODO:
     Create error handlers for all expected errors
