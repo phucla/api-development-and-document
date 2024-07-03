@@ -185,7 +185,7 @@ def create_app(test_config=None):
         previous_questions = data["previous_questions"]
         category_id = data["category_id"]
         result = {"success": True}
-        if "category_id" not in data: 
+        if category_id == 0: 
             questions = db.session.query(Question).filter(Question.id.not_in(previous_questions)).all()
         else:
             questions = questions = (db.session.query(Question).filter(Question.category == category_id)
