@@ -282,7 +282,10 @@ To deploy the tests, run
 dropdb trivia_test
 createdb trivia_test
 psql trivia_test < trivia.psql
-python test_flaskr.py
+```
+
+```bash
+DB_NAME='trivia_test' DB_USER='postgres' DB_PASSWORD='passtest' DB_HOST='localhost' DB_PORT='54321' python test_flaskr.py
 ```
 
 ### Test result
