@@ -7,13 +7,27 @@ from flaskr import create_app
 from models import setup_db, Question, Category, db
 
 
+database_username = os.environ['DB_USER']
+database_password = os.environ['DB_PASSWORD']
+db_host = os.environ['DB_HOST']
+db_port = os.environ['DB_PORT']
+database_name = os.environ['DB_NAME_TEST']
+
+database_path = 'postgresql://{}:{}@{}:{}/{}'.format(
+    database_username,
+    database_password,
+    db_host,
+    db_port,
+    database_name
+)
+
 class TriviaTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
 
     def setUp(self):
         """Define test variables and initialize app."""
         self.database_name = "trivia_test"
-        self.database_path = "postgresql://{}/{}".format('postgres:laducphuc@localhost:5432', self.database_name)
+        self.database_path = database_path
         
         self.app = create_app({
             "SQLALCHEMY_DATABASE_URI": self.database_path
