@@ -90,13 +90,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["categories"])
 
     def test_delete_questions(self):
-        res = self.client().delete("/questions/2")
+        res = self.client().delete("/questions/9")
         data = json.loads(res.data)
 
         question = Question.query.filter(Question.id == 1).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
+        self.assertEqual(data["messages"], "Question successfully deleted")
+        self.assertEqual(data["question_id"], 9)
         self.assertEqual(question, None)
     
     def test_delete_questions_not_found(self):
