@@ -62,16 +62,18 @@ def create_app(test_config=None):
     @app.route('/questions')
     def questions():
         page = request.args.get('page', 1, type=int)
-        start = (page -1) * QUESTIONS_PER_PAGE
-        end = start + QUESTIONS_PER_PAGE
-        questions = db.session.query(Question).all()
+        questions = Question.query.order_by(Question.id).paginate(page,QUESTIONS_PER_PAGE,error_out=False).items
         questions_json = [question.format() for question in questions]
         categories = db.session.query(Category).all()
         categories_json = {category.id: category.type for category in categories}
+
+        if len(questions_json) == 0:
+            abort(404)
+
         return jsonify({
             'success': True,
-            'questions': questions_json[start:end],
-            'total_questions': len(questions_json),
+            'questions': questions_json,
+            'total_questions': len(questions),
             'categories': categories_json,
             'current_category': ''
         })
@@ -184,6 +186,11 @@ def create_app(test_config=None):
     @app.route('/quizzes', methods=["POST"])
     def quizzes():
         data = request.get_json()
+        if (
+            "category_id" not in data
+            or "previous_questions" not in data
+        ):
+            abort(422)
         previous_questions = data["previous_questions"]
         category_id = data["category_id"]
         result = {"success": True}
@@ -223,7 +230,7 @@ def create_app(test_config=None):
     def not_found_request(error):
         return jsonify({
             "success": False,
-            "message": "Page not found",
+            "messages": "Page not found",
             "error": 404,
         }), 404
     

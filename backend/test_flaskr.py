@@ -65,7 +65,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
-        self.assertEqual(data["message"], "Page not found")
+        self.assertEqual(data["messages"], "Page not found")
 
     def test_get_paginated_questions(self):
         res = self.client().get("/questions")
@@ -82,12 +82,9 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().get("/questions?page=100")
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data["success"], True)
-        self.assertTrue(data["total_questions"])
-        self.assertEqual(data["questions"], [])
-        self.assertEqual(data["current_category"], '')
-        self.assertTrue(data["categories"])
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["messages"], "Page not found")
 
     def test_delete_questions(self):
         res = self.client().delete("/questions/9")
@@ -174,15 +171,14 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_quiz_question_without_category(self):
         res = self.client().post("/quizzes", json={
-            "previous_questions": [],
-            "category_id": 0
+            "previous_questions": []
         })
 
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 200)
-        self.assertTrue(data["success"])
-        self.assertTrue(data["question"])
+        self.assertEqual(res.status_code, 422)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["messages"], "Unprocessable entity")
 
     def test_get_url_notfound(self):
         res = self.client().get("/test-url")
@@ -190,7 +186,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data["success"])
-        self.assertEqual(data["message"], "Page not found")
+        self.assertEqual(data["messages"], "Page not found")
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()

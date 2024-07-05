@@ -71,6 +71,56 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
 
+### Error response
+
+`400 -- Bad request`
+
+- Return error response
+
+```json
+{
+    "success": false,
+    "messages": "Bad request",
+    "error": 400,
+}
+```
+
+`404 -- Not found`
+
+- Return error response
+
+```json
+{
+    "success": false,
+    "messages": "Page not found",
+    "error": 404,
+}
+```
+
+`422 -- Not processable`
+
+- Return error response
+
+```json
+{
+    "success": false,
+    "messages": "Unprocessable entity",
+    "error": 422,
+}
+```
+
+`500 -- Internal Server Error`
+
+- Return error response
+
+```json
+{
+    "success": false,
+    "messages": "Internal server error",
+    "error": 500,
+}
+```
+
 ### Documentation Example
 
 `GET '/categories'`
